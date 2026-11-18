@@ -1,6 +1,6 @@
 js navigate through webpage
 
-document.location.href = 'profile.html.html';
+document.location.href = 'main.html';
 
 alert people
 alert()
