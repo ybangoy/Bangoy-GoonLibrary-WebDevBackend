@@ -8,8 +8,6 @@
 
 	<body>
 
-	
-
 		Create your username
 		<input id='Username' type='text'>
 		Create your password
@@ -17,51 +15,50 @@
 		Confirm password
 		<input id='confirmpass' type='text'>
 
-		<button 
-		type="button" 
-		onclick="document.location.href = 'login.html'">
+		<button
+		type="button"
+		onclick="
+			clickButton(
+				document.getElementById('Username').value,
+				document.getElementById('Password').value,
+				document.getElementById('confirmpass').value
+			)
+			">
 			Confirm Registration
 		</button>
 
 		<script>
-			const Username = "qwer";
-			const Password = "1234";
-			const confirmpass = "1234"
+			const clickButton = async (a, b, c) => {
 
-			const ClickButton = (a, b, c) => {
+				if (b !== c) {
+					alert('Passwords do not match');
+					return;
+				}
 
 				const postData = {
-					Username: a,
-					Password: b,
-					confirmpass: c
+					username: a,
+					password: b
 				};
 
-			const data = {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(postData)
-			};
-	
-			async function fetchData() {
+				const data = {
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				};
+
 				try {
-					const response = await fetch('http://127.0.0.1:8000/Login',data);
-					console.log(response)
-					if (response.data.status =='success') {
-						document.location.href = 'profile.html.html';
+					const response = await axios.post('http://127.0.0.1:8000/Register', postData, data);
+					console.log(response.data);
+
+					if (response.data.status == 'success') {
+						document.location.href = 'login.html';
 					} else {
 						throw new Error('Failed to fetch data');
 					}
 				} catch (error) {
-					console.error('Error:', error); 
+					console.error('Error:', error);
 				}
 			}
-
-			fetchData()
-	
-		}
-
 		</script>
 	</body>
 </html>
