@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from database import create_db_and_tables, engine
 from fastapi.middleware.cors import CORSMiddleware
 
-from models import Cawfee
+from models import User, Book
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -35,18 +35,47 @@ async def root():
     return {"message": "Successful"}
 
 
-@app.get("/Cawfee/{id}")
-async def read_survey(id):
+@app.get("/Book/{id}")
+async def read_book(id):
     with Session(engine) as session:
         print(id,'--------------------------------------------------------------')
-        cawfee = session.get(Cawfee, id)
-        return {"message": cawfee}
-    
+        book = session.get(Book, id)
+        return {"message": book}
 
-@app.post("/Cawfee")
-async def root(cawfee  : Cawfee):
+
+@app.post("/Book")
+async def add_book(book  : Book):
     with Session(engine) as session:
-        session.add(cawfee)
+        session.add(book)
         session.commit()
-        session.refresh(cawfee)
-        return {"message": cawfee}
+        session.refresh(book)
+        return {"message": book}
+
+
+@app.post("/Register")
+async def register(user: User):
+    with Session(engine) as session:
+        existing = session.exec(select(User).where(User.username == user.username)).first()
+        if existing:
+            return {"status": "failed"}
+        session.add(user)
+        session.commit()
+        return {"status": "success"}
+
+
+@app.post("/Login")
+async def login(user: User):
+    with Session(engine) as session:
+        statement = select(User).where(User.username == user.username, User.password == user.password)
+        found = session.exec(statement).first()
+        if found:
+            return {"status": "success"}
+        return {"status": "failed"}
+
+
+@app.get("/Books")
+async def get_books():
+    with Session(engine) as session:
+        statement = select(Book)
+        results = session.exec(statement)
+        return results.all()
