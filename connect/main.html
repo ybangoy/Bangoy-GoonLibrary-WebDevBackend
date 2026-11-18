@@ -3,11 +3,41 @@
 	<head>
 		<title>Page Title</title>
 		<link rel="stylesheet" href="styles.css">
+		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 	</head>
 
 	<body>
 
-	
-		<p>Welcome to Cawfee Cafe!</p>
+		<p>Welcome to the Library!</p>
+
+		<div id="books"></div>
+
+		<script>
+			async function getBooks() {
+				try {
+					const response = await axios.get('http://127.0.0.1:8000/Books');
+					const books = response.data;
+					console.log(books)
+
+					for (const book of books) {
+						document.getElementById('books').innerHTML +=
+							'<div style="border:1px solid black">' +
+							'<div>ID: ' + book.id + '</div>' +
+							'<h3>' + book.productName + '</h3>' +
+							'<div>' + book.productDescription + '</div>' +
+							'<div>Type: ' + book.productList + '</div>' +
+							'<div>Genre: ' + book.genre + '</div>' +
+							'<div>Chapters: ' + book.chapters + ' (' + book.status + ')</div>' +
+							'<div>Source: ' + book.source + '</div>' +
+							'<div>Price: ' + book.price + ' - ' + book.priceInfo + '</div>' +
+							'</div>';
+					}
+				} catch (error) {
+					console.error('Error:', error);
+				}
+			}
+
+			getBooks()
+		</script>
 	</body>
 </html>
